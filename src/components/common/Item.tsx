@@ -1,13 +1,19 @@
+import { useNavigate } from 'react-router-dom';
 import { IIssue } from 'types';
 
 interface ItemProps {
-  // issue?: IIssueItem;
-  issue?: IIssue;
+  issue: IIssue;
 }
 
 const Item = ({ issue }: ItemProps) => {
+  const navigate = useNavigate();
+
+  const clickToDetailIssue = (issueNumber: number) => {
+    navigate(`/issues/${issueNumber}`);
+  };
+
   return (
-    <li>
+    <li onClick={() => clickToDetailIssue(issue?.number)}>
       <div>
         <div>
           <span>#{issue?.number}</span>
