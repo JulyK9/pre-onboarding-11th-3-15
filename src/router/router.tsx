@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Item from 'pages/Item';
 import List from 'pages/List';
 import Layout from 'components/common/Layout';
+import Detail from 'pages/Detail';
 
 export const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'issues/:issueId',
-        element: <Item />,
+        element: <Detail />,
       },
     ],
   },
