@@ -1,5 +1,5 @@
 import { HttpClient } from 'api/httpClient';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { IssueService } from 'service/IssueService';
 import { IIssue } from 'types';
 
@@ -22,6 +22,9 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [issueDetail, setIssueDetail] = useState<IIssue>();
 
+  const organization = useMemo(() => issueList[0]?.url.split('/')[4], [issueList]);
+  const repository = useMemo(() => issueList[0]?.url.split('/')[5], [issueList]);
+
   const getIssueDetail = async (issueNumber: string) => {
     await issueService.fetchIssueDetail(issueNumber).then((issue) => {
       setIssueDetail(issue);
@@ -36,7 +39,7 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     });
   }, []);
-  const value = { issueList, isLoading, issueDetail, getIssueDetail, setIsLoading };
+  const value = { issueList, isLoading, issueDetail, getIssueDetail, setIsLoading, organization, repository };
 
   return <GetIssueContext.Provider value={value}>{children}</GetIssueContext.Provider>;
 }

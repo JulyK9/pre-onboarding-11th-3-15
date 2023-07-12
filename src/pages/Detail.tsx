@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useGetIssue } from 'context';
 
 const Detail = () => {
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const { issueDetail, getIssueDetail, isLoading, setIsLoading }: any = useGetIssue();
 
   const params = useParams();

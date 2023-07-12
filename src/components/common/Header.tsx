@@ -1,11 +1,13 @@
-import React from 'react';
+import { useGetIssue } from 'context';
 
-type Props = {};
+const Header = () => {
+  const { organization, repository }: any = useGetIssue();
 
-const Header = (props: Props) => {
   return (
     <>
-      <h2>faceboook / react</h2>
+      <h2>
+        {organization} / {repository}
+      </h2>
     </>
   );
 };
