@@ -10,8 +10,8 @@ export class IssueService {
     this.#httpClient = httpClient;
   }
 
-  async fetchIssueList(): Promise<IIssue[]> {
-    const response = await this.#httpClient.fetch('');
+  async fetchIssueList(pageNum: number): Promise<IIssue[]> {
+    const response = await this.#httpClient.fetch(`?state=open&sort=comments&page=${pageNum}`);
     return response.json();
   }
 
