@@ -1,5 +1,5 @@
 import { HttpClient } from 'api/httpClient';
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo } from 'react';
 import { IssueService } from 'service/IssueService';
 import { IIssue } from 'types';
 
@@ -22,6 +22,9 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [issueDetail, setIssueDetail] = useState<IIssue>();
 
+  const [pageNum, setPageNum] = useState(0);
+  const [isMoreList, setIsMoreList] = useState(false);
+
   const organization = useMemo(() => issueList[0]?.url.split('/')[4], [issueList]);
   const repository = useMemo(() => issueList[0]?.url.split('/')[5], [issueList]);
 
@@ -32,14 +35,36 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  useEffect(() => {
+  const getNextList = () => {
+    if (!isMoreList) {
+      getListByPageNum(pageNum + 1);
+      setPageNum(pageNum + 1);
+    }
+  };
+
+  const getListByPageNum = async (pageNum: number) => {
     setIsLoading(true);
-    issueService.fetchIssueList().then((issues: IIssue[]) => {
+
+    await issueService.fetchIssueList(pageNum).then((issues: IIssue[]) => {
+      if (issues.length === 0) {
+        setIsMoreList(true);
+      }
       setIssueList((prev) => [...prev, ...issues]);
       setIsLoading(false);
     });
-  }, []);
-  const value = { issueList, isLoading, issueDetail, getIssueDetail, setIsLoading, organization, repository };
+  };
+
+  const value = {
+    issueList,
+    isLoading,
+    issueDetail,
+    getIssueDetail,
+    setIsLoading,
+    organization,
+    repository,
+    isMoreList,
+    getNextList,
+  };
 
   return <GetIssueContext.Provider value={value}>{children}</GetIssueContext.Provider>;
 }
