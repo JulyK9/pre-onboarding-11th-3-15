@@ -10,13 +10,13 @@ export class IssueService {
     this.#httpClient = httpClient;
   }
 
-  async getIssueList(): Promise<IIssue[]> {
+  async fetchIssueList(): Promise<IIssue[]> {
     const response = await this.#httpClient.fetch('');
     return response.json();
   }
 
-  async getIssueDetail(issueNumber: string): Promise<IIssue> {
-    const response = await this.#httpClient.fetch(issueNumber);
+  async fetchIssueDetail(issueNumber: string): Promise<IIssue> {
+    const response = await this.#httpClient.fetch('/' + issueNumber);
 
     return response.json();
   }
