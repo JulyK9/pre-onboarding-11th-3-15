@@ -6,9 +6,12 @@ const githubToken = process.env.REACT_APP_GITHUB_TOKEN;
 
 const List = () => {
   const [issues, setIssues] = useState<IIssue[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    setIsLoading(true);
+
+    const getIssueList = async () => {
       const response = await fetch('https://api.github.com/repos/facebook/react/issues', {
         method: 'GET',
         headers: {
@@ -20,12 +23,21 @@ const List = () => {
       const issueList = await response.json();
 
       setIssues((prev) => [...prev, ...issueList]);
+      setIsLoading(false);
     };
 
-    fetchData();
+    getIssueList();
   }, []);
 
-  return <ul>{issues?.map((issue: IIssue) => <Item key={issue?.id} issue={issue} />)}</ul>;
+  return (
+    <>
+      {isLoading ? (
+        <h2>Loading...</h2>
+      ) : (
+        <ul>{issues?.map((issue: IIssue) => <Item key={issue?.id} issue={issue} />)}</ul>
+      )}
+    </>
+  );
 };
 
 export default List;
