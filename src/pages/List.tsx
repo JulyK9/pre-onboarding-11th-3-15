@@ -4,8 +4,7 @@ import { IIssue } from 'types';
 
 const List = () => {
   const { issueList, isLoading }: any = useGetIssue();
-  console.log('issueList: ', issueList);
-  // console.log('isLoading: ', isLoading);
+
   return (
     <>
       {isLoading ? (

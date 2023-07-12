@@ -12,7 +12,6 @@ export class IssueService {
 
   async getIssueList(): Promise<IIssue[]> {
     const response = await this.#httpClient.fetch('');
-    // console.log('get issue list response: ', response);
     return response.json();
   }
 

@@ -17,8 +17,6 @@ const githubToken = process.env.REACT_APP_GITHUB_TOKEN;
 const httpClient = new HttpClient(BASE_URL, githubToken);
 const issueService = new IssueService(httpClient);
 
-// console.log(httpClient);
-
 export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   const [issueList, setIssueList] = useState<IIssue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,12 +24,10 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setIsLoading(true);
     issueService.getIssueList().then((issues: IIssue[]) => {
-      // console.log('issues', issues);
       setIssueList((prev) => [...prev, ...issues]);
       setIsLoading(false);
     });
   }, []);
-  // console.log('context issuelist: ', issueList);
   const value = { issueList, isLoading };
 
   return <GetIssueContext.Provider value={value}>{children}</GetIssueContext.Provider>;
