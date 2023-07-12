@@ -20,15 +20,23 @@ const issueService = new IssueService(httpClient);
 export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   const [issueList, setIssueList] = useState<IIssue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [issueDetail, setIssueDetail] = useState<IIssue>();
+
+  const getIssueDetail = async (issueNumber: string) => {
+    await issueService.fetchIssueDetail(issueNumber).then((issue) => {
+      setIssueDetail(issue);
+      setIsLoading(false);
+    });
+  };
 
   useEffect(() => {
     setIsLoading(true);
-    issueService.getIssueList().then((issues: IIssue[]) => {
+    issueService.fetchIssueList().then((issues: IIssue[]) => {
       setIssueList((prev) => [...prev, ...issues]);
       setIsLoading(false);
     });
   }, []);
-  const value = { issueList, isLoading };
+  const value = { issueList, isLoading, issueDetail, getIssueDetail, setIsLoading };
 
   return <GetIssueContext.Provider value={value}>{children}</GetIssueContext.Provider>;
 }

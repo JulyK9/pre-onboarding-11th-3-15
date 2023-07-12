@@ -1,35 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { IIssue } from 'types';
-
-const githubToken = process.env.REACT_APP_GITHUB_TOKEN;
+import { useGetIssue } from 'context';
 
 const Detail = () => {
-  const [issueDetail, setIssueDetail] = useState<IIssue>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { issueDetail, getIssueDetail, isLoading, setIsLoading }: any = useGetIssue();
 
   const params = useParams();
   const { issueNumber } = params;
 
   useEffect(() => {
     setIsLoading(true);
-    const getDetailIssue = async () => {
-      const response = await fetch(`https://api.github.com/repos/facebook/react/issues/${issueNumber}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${githubToken}`,
-        },
-      });
-
-      const detailIssue = await response.json();
-
-      setIssueDetail(detailIssue);
-      setIsLoading(false);
-    };
-
-    getDetailIssue();
-  }, [issueNumber]);
+    getIssueDetail(issueNumber);
+  }, []);
 
   return (
     <>
@@ -38,7 +21,9 @@ const Detail = () => {
       ) : (
         <>
           <div>
-            <div>프로필</div>
+            <div>
+              <img src={issueDetail?.user.avatar_url} alt="avatar-Url" />
+            </div>
             <div>
               <div>
                 <span>#{issueDetail?.number}</span>
