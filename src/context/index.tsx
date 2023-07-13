@@ -23,7 +23,7 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   const [issueDetail, setIssueDetail] = useState<IIssue>();
 
   const [pageNum, setPageNum] = useState(0);
-  const [isMoreList, setIsMoreList] = useState(false);
+  const [isNoMoreList, setIsNoMoreList] = useState(false);
 
   const organization = useMemo(() => issueList[0]?.url.split('/')[4], [issueList]);
   const repository = useMemo(() => issueList[0]?.url.split('/')[5], [issueList]);
@@ -36,7 +36,7 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getNextList = () => {
-    if (!isMoreList) {
+    if (!isNoMoreList) {
       getListByPageNum(pageNum + 1);
       setPageNum(pageNum + 1);
     }
@@ -47,7 +47,7 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
 
     await issueService.fetchIssueList(pageNum).then((issues: IIssue[]) => {
       if (issues.length === 0) {
-        setIsMoreList(true);
+        setIsNoMoreList(true);
       }
       setIssueList((prev) => [...prev, ...issues]);
       setIsLoading(false);
@@ -62,7 +62,7 @@ export function GetIssueProvider({ children }: { children: React.ReactNode }) {
     setIsLoading,
     organization,
     repository,
-    isMoreList,
+    isNoMoreList,
     getNextList,
   };
 

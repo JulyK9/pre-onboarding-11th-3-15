@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { IIssue } from 'types';
 
 const List = () => {
-  const { issueList, isLoading, getNextList, isMoreList }: any = useGetIssue();
+  const { issueList, isLoading, getNextList, isNoMoreList }: any = useGetIssue();
 
   const bannerElement = (
     <li>
@@ -26,47 +26,44 @@ const List = () => {
   }, []);
 
   const observerLoader = useRef<HTMLDivElement>(null);
-  const observer = useRef<IntersectionObserver | null>(null);
-  const scrollPosition = useRef<number>(0);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
       const target = entries[0];
+
       if (target.isIntersecting && !isLoading) {
         observer.unobserve(observerLoader.current as HTMLDivElement);
-        if (isMoreList) {
-          window.scrollTo(0, scrollPosition.current);
+
+        if (isNoMoreList) {
           observer.disconnect();
           return;
         }
 
-        scrollPosition.current = window.scrollY;
-
         getNextList();
       }
     },
-    [isLoading, isMoreList, getNextList],
+    [isLoading, isNoMoreList, getNextList],
   );
 
   useEffect(() => {
     const options = {
       root: null,
       rootMargin: '20px',
-      threshold: 1,
+      threshold: 0.5,
     };
 
-    observer.current = new IntersectionObserver(handleObserver, options);
+    // 관찰자 객체 생성
+    const observer = new IntersectionObserver(handleObserver, options);
     if (observerLoader.current) {
-      observer.current.observe(observerLoader.current);
+      observer.observe(observerLoader.current);
     }
     return () => {
-      if (observer.current) {
-        observer && observer.current.disconnect();
+      if (observerLoader.current) {
+        observer && observer.disconnect();
       }
     };
   }, [handleObserver]);
 
-  console.log('copyIssueList: ', copyIssueList);
   return (
     <>
       {isLoading ? (
@@ -76,7 +73,7 @@ const List = () => {
           {copyIssueList?.map((issue: React.ReactNode, index: number) => (
             <React.Fragment key={index}>{issue}</React.Fragment>
           ))}
-          <div ref={observerLoader}>{isLoading && <span>추가 리스트 가져오는중...</span>}</div>
+          <div ref={observerLoader}>{isLoading && <span>로딩...</span>}</div>
         </ul>
       )}
     </>
